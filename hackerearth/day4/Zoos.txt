@@ -1,0 +1,19 @@
+#include <stdio.h>
+#include<stdbool.h>
+int main(){
+	char val[21];
+	scanf("%s", val);    // Reading input from STDIN
+	int z=0;
+	int o=0;
+	for(int i=0;i<strlen(val);i++){
+		if(val[i]=='z')
+			z++;
+		else
+			o++;
+	}
+	if(2*z==o)
+		printf("Yes");
+	else
+		printf("No");
+return 0;
+}

@@ -1,0 +1,18 @@
+bool isAnagram(char* s, char* t) {
+    int* s_count =(int*)calloc(26,sizeof(int));
+    int* t_count =(int*)calloc(26,sizeof(int));
+    int s_size=strlen(s);
+    int t_size=strlen(t);
+    if(s_size!=t_size){
+        return false;
+    }
+    for(int i=0;i<s_size;i++){
+        s_count[s[i]-'a']++;
+        t_count[t[i]-'a']++;
+    }
+    for(int i=0;i<26;i++){
+        if(s_count[i]!=t_count[i])
+            return false;
+    }
+return true;
+}

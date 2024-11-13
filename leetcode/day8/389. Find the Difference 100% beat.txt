@@ -1,0 +1,13 @@
+char findTheDifference(char* s, char* t) {
+    int sums=0;
+    int sumt=0;
+    for(int i=0;i<strlen(s);i++){
+        sums=sums+(s[i]-'a');
+    }
+    for(int i=0;i<strlen(t);i++){
+        sumt=sumt+(t[i]-'a');
+    }
+    int val=sumt-sums;
+   
+    return val+'a'; 
+}

@@ -1,0 +1,16 @@
+int compare(const void* a, const void* b){
+    return(*(int*)a-*(int*)b);
+}
+bool containsDuplicate(int* nums, int numsSize) {
+    qsort(nums,numsSize,sizeof(int),compare);
+    int flag=0;
+    for(int i=1;i<numsSize;i++){
+        if(nums[i-1]==nums[i]){
+            flag=1;
+        }
+    }
+    if(flag==0)
+        return false;
+    else
+        return true;
+}
