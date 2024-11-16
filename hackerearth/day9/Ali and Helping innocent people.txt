@@ -1,0 +1,27 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+bool is_vowel(char c) {
+    return (c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U' || c == 'Y');
+}
+bool is_even_sum(char a, char b) {
+    int sum = (a - '0') + (b - '0');
+    return (sum % 2 == 0);
+}
+int main() {
+    char tag[10];
+    scanf("%s", tag);
+    if (is_vowel(tag[2])) {
+        printf("invalid\n");
+        return 0;
+    }
+    if (!is_even_sum(tag[0], tag[1]) ||
+        !is_even_sum(tag[3], tag[4]) ||
+        !is_even_sum(tag[4], tag[5]) ||
+        !is_even_sum(tag[7], tag[8])) {
+        printf("invalid\n");
+        return 0;
+    }
+    printf("valid\n");
+    return 0;
+}
