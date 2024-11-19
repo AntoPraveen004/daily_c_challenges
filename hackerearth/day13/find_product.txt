@@ -1,0 +1,31 @@
+#include <stdio.h>
+
+#define MOD 1000000007
+
+// Function to calculate the product modulo MOD
+long long find_product(int N, int A[]) {
+    long long product = 1;
+    for (int i = 0; i < N; i++) {
+        product = (product * A[i]) % MOD;
+    }
+    return product;
+}
+
+int main() {
+    int N;
+    
+    // Read the size of the array
+    scanf("%d", &N);
+    
+    int A[N];
+    
+    // Read the elements of the array
+    for (int i = 0; i < N; i++) {
+        scanf("%d", &A[i]);
+    }
+    
+    // Call the function to calculate the product and print the result
+    printf("%lld\n", find_product(N, A));
+    
+    return 0;
+}

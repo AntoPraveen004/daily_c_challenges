@@ -1,0 +1,41 @@
+#include <stdlib.h>
+#include <stdbool.h>
+
+long long maximumSubarraySum(int* nums, int numsSize, int k) {
+    if (numsSize < k) {
+        return 0; // Edge case: No valid subarray exists
+    }
+
+    int* count = (int*)calloc(100001, sizeof(int)); // Array to track occurrences of numbers
+    long long sum = 0, max = 0;
+    int uniqueCount = 0;
+
+    // Sliding window approach
+    for (int i = 0; i < numsSize; i++) {
+        // Add current element to the window
+        count[nums[i]]++;
+        if (count[nums[i]] == 1) {
+            sum += nums[i];
+            uniqueCount++;
+        }
+
+        // If the window exceeds size k, remove the leftmost element
+        if (i >= k) {
+            count[nums[i - k]]--;
+            if (count[nums[i - k]] == 0) {
+                sum -= nums[i - k];
+                uniqueCount--;
+            }
+        }
+
+        // Check if the current window is valid and update the maximum sum
+        if (uniqueCount == k) {
+            if (sum > max) {
+                max = sum;
+            }
+        }
+    }
+
+    free(count); // Free allocated memory
+    return max;
+}
