@@ -1,0 +1,17 @@
+int compare(const void* a,const void*b){
+    return (*(int*)a-*(int*)b);
+}
+int maximumProduct(int* nums, int numsSize) {
+    int productfirst=1;
+    int productlast=1;
+    int product;
+    if(numsSize>3){
+    qsort(nums,numsSize,sizeof(int),compare);
+    productfirst=nums[0]*nums[1]*nums[numsSize-1];
+    productlast=nums[numsSize-1]*nums[numsSize-2]*nums[numsSize-3];
+    product=(productfirst>productlast)?productfirst:productlast;
+    }else if(numsSize==3){
+        product=nums[0]*nums[1]*nums[2];
+    }
+    return product;
+}

@@ -1,0 +1,26 @@
+int min3(int x, int y, int z) {
+    return x < y ? (x < z ? x : z) : (y < z ? y : z);
+}
+int takeCharacters(char* s, int k) {
+    int freq[3] = {0};
+    int n = strlen(s);
+    for (int i = 0; i < n; i++) {
+        freq[s[i] - 'a']++;
+    }
+    if (min3(freq[0], freq[1], freq[2]) < k) {
+        return -1;
+    }
+    int steps = INT_MAX, l = 0;
+    for (int r = 0; r < n; r++) {
+        freq[s[r] - 'a']--;
+        while (l < n && min3(freq[0], freq[1], freq[2]) < k) {
+            freq[s[l] - 'a']++;
+            l++;
+        }
+        int current = n - (r - l + 1);
+        if (current < steps) {
+            steps = current;
+        }
+    }
+    return steps;
+}

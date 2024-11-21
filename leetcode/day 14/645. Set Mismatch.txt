@@ -1,0 +1,26 @@
+/**
+ * Note: The returned array must be malloced, assume caller calls free().
+ */
+ int compare(const void* a,const void*b){
+    return (*(int*)a-*(int*)b);
+ }
+int* findErrorNums(int* nums, int numsSize, int* returnSize) {
+    int* res=(int*)malloc(2*sizeof(int));
+    qsort(nums,numsSize,sizeof(int),compare);
+    int val=0;
+    int sum=0;
+    int totalsum=0;
+    for(int i=0;i<numsSize;i++){
+        if(i+1<numsSize && nums[i]==nums[i+1])
+        {
+            val=nums[i];
+        }
+        sum=sum+nums[i];
+        totalsum=totalsum+i+1;
+    }
+    printf("%d ",totalsum);
+    res[0]=val;
+    res[1]=val+(totalsum-sum);
+    *returnSize=2;
+    return res;
+}

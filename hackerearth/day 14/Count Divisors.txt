@@ -1,0 +1,23 @@
+#include stdio.h
+
+int main() {
+    int l, r, k;
+    scanf(%d %d %d, &l, &r, &k);
+    
+     Find the first number divisible by k greater than or equal to l
+    int first_divisible = (l % k == 0)  l  l + (k - (l % k));
+    
+     Find the last number divisible by k less than or equal to r
+    int last_divisible = (r % k == 0)  r  r - (r % k);
+    
+     If the first divisible number is greater than the last divisible, no numbers are divisible
+    if (first_divisible  r  last_divisible  l) {
+        printf(0n);
+    } else {
+         Count the number of divisible numbers in the range
+        int count = (last_divisible - first_divisible)  k + 1;
+        printf(%dn, count);
+    }
+    
+    return 0;
+}
