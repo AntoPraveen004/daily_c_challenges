@@ -1,0 +1,84 @@
+typedef struct Point{
+	int row;
+	int col;
+} Point;
+
+typedef enum Dir{
+	Dir_UP = 0,
+	Dir_RIGHT,
+	Dir_DOWN,
+	Dir_LEFT,
+
+	Dir_LEN
+} Dir;
+
+static const Point g_dirToOffset[Dir_LEN] = {
+	[Dir_UP] = {-1, 0},
+	[Dir_RIGHT] = {0, 1},
+	[Dir_DOWN] = {1, 0},
+	[Dir_LEFT] = {0, -1}
+};
+
+static Point Point_plus(const Point * const pA, const Point * const pB){
+	return (Point){pA->row + pB->row, pA->col + pB->col};
+}
+
+static bool Point_isEqual(const Point * const pThis, const Point * const pThat){
+	return (pThis->row == pThat->row) && (pThis->col == pThat->col);
+}
+
+static bool Point_isInRange(const Point * const pThis, const int totalRow, const int totalCol){
+	return (pThis->row >= 0 && pThis->row < totalRow) &&
+		(pThis->col >= 0 && pThis->col < totalCol);
+}
+
+int minimumObstacles(
+	int * const * const grid,
+	const int totalRow,
+	const int * const totalCols
+){
+	assert(totalRow >= 1);
+	const int totalCol = totalCols[0];
+	assert(totalCol >= 1);
+	const int totalCell = totalCol * totalRow;
+
+	Point bfsDeque[(totalCell - 1) + 1 + (totalCell - 1)];
+	int get = totalCell - 1, set = totalCell - 1;
+
+	bool visited[totalRow][totalCol];
+	memset(&visited, 0, sizeof (visited));
+
+	const Point init = {0, 0};
+
+	bfsDeque[set] = init;
+	set += 1;
+	visited[init.row][init.col] = true;
+
+	const Point dst = {totalRow - 1, totalCol - 1};
+	for (int cost = (grid[init.row][init.col] == 0)? 0 : 1; 1; cost += 1){
+		for (int oldSet = set; get < oldSet; ){
+			const Point cur = bfsDeque[get];
+			get += 1;
+
+			if (Point_isEqual(&cur, &dst)){
+				return cost;
+			}
+
+			for (Dir curDir = 0; curDir < Dir_LEN; curDir += 1){
+				const Point next = Point_plus(&cur, &g_dirToOffset[curDir]);
+
+				if (Point_isInRange(&next, totalRow, totalCol) && !visited[next.row][next.col]){
+					if (0 == grid[next.row][next.col]){
+						bfsDeque[get - 1] = next;
+						get -= 1;
+					}else {
+						bfsDeque[set] = next;
+						set += 1;
+					}
+					visited[next.row][next.col] = true;
+				}
+			}
+		}
+		assert(get < set);
+	}
+}

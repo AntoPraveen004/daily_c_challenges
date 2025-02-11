@@ -1,0 +1,30 @@
+struct node{
+    int index;
+    int val;
+};
+int compareByVal(const void *a, const void *b) {
+    struct node *nodeA = *(struct node **)a;
+    struct node *nodeB = *(struct node **)b;
+    return nodeB->val - nodeA->val;  
+}
+
+int dominantIndex(int* nums, int numsSize) {
+struct node* n[numsSize];
+    for(int i=0;i<numsSize;i++){
+        n[i] = (struct node*)malloc(sizeof(struct node));
+        n[i]->index=i;
+        n[i]->val=nums[i];
+    }
+qsort(n, numsSize, sizeof(struct node*), compareByVal);
+    int i=0;
+    while(i+1<numsSize && n[i]->val==n[i+1]->val)
+        i=i+2;
+    for(int i=0;i<numsSize;i++){
+        printf("%d ",n[i]->val);
+    }
+    if(n[i]->val>=n[i+1]->val*2){
+        return n[i]->index;
+    }else{
+        return -1;
+    }
+}

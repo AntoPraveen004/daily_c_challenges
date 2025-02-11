@@ -1,0 +1,54 @@
+#include <stdlib.h>
+#include <stdio.h>
+
+// Function to compare integers for sorting
+int compare(const void* a, const void* b) {
+    return (*(int*)a - *(int*)b);
+}
+
+/**
+ * Note: The returned array must be malloced, assume caller calls free().
+ */
+int* fairCandySwap(int* aliceSizes, int aliceSizesSize, int* bobSizes, int bobSizesSize, int* returnSize) {
+    // Calculate the total number of candies Alice and Bob have
+    int aliceSum = 0, bobSum = 0;
+    for (int i = 0; i < aliceSizesSize; i++) {
+        aliceSum += aliceSizes[i];
+    }
+    for (int i = 0; i < bobSizesSize; i++) {
+        bobSum += bobSizes[i];
+    }
+
+    // Target difference: delta = (bobSum - aliceSum) / 2
+    int delta = (bobSum - aliceSum) / 2;
+
+    // Sort Bob's candy sizes to enable binary search
+    qsort(bobSizes, bobSizesSize, sizeof(int), compare);
+
+    // Allocate memory for the result
+    int* res = (int*)malloc(2 * sizeof(int));
+
+    // Find the pair of candies to swap
+    for (int i = 0; i < aliceSizesSize; i++) {
+        int target = aliceSizes[i] + delta;
+
+        // Binary search for `target` in Bob's candy sizes
+        int left = 0, right = bobSizesSize - 1;
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (bobSizes[mid] == target) {
+                res[0] = aliceSizes[i];
+                res[1] = target;
+                *returnSize = 2;
+                return res;
+            } else if (bobSizes[mid] < target) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+    }
+
+    // If no valid pair is found (though guaranteed to exist)
+    return NULL;
+}

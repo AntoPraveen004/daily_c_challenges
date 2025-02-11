@@ -1,0 +1,116 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+
+#define MAX 1000
+
+// Min-Heap structure for priority queue
+typedef struct {
+    int time, row, col;
+} Node;
+
+Node heap[MAX * MAX];
+int heapSize = 0;
+
+void swap(int i, int j) {
+    Node temp = heap[i];
+    heap[i] = heap[j];
+    heap[j] = temp;
+}
+
+void heapifyUp(int idx) {
+    while (idx > 1 && heap[idx].time < heap[idx / 2].time) {
+        swap(idx, idx / 2);
+        idx /= 2;
+    }
+}
+
+void heapifyDown(int idx) {
+    int smallest = idx;
+    int left = 2 * idx;
+    int right = 2 * idx + 1;
+
+    if (left <= heapSize && heap[left].time < heap[smallest].time) {
+        smallest = left;
+    }
+    if (right <= heapSize && heap[right].time < heap[smallest].time) {
+        smallest = right;
+    }
+    if (smallest != idx) {
+        swap(idx, smallest);
+        heapifyDown(smallest);
+    }
+}
+
+void push(Node n) {
+    heap[++heapSize] = n;
+    heapifyUp(heapSize);
+}
+
+Node pop() {
+    Node top = heap[1];
+    heap[1] = heap[heapSize--];
+    heapifyDown(1);
+    return top;
+}
+
+int minimumTime(int** grid, int gridSize, int* gridColSize) {
+    int rows = gridSize;
+    int cols = gridColSize[0];
+    
+    // If the first two cells are invalid for starting, return -1
+    if (grid[0][1] > 1 && grid[1][0] > 1) {
+        return -1;
+    }
+
+    int seen[rows][cols];
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            seen[i][j] = 0; // mark all cells as unvisited initially
+        }
+    }
+
+    // Define the four possible directions (up, right, down, left)
+    int moves[4][2] = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+    
+    // Push the starting point (time, row, col)
+    Node start = {0, 0, 0};
+    push(start);
+    seen[0][0] = 1;
+
+    while (heapSize > 0) {
+        Node curr = pop();
+        int time = curr.time;
+        int row = curr.row;
+        int col = curr.col;
+
+        // Check all 4 possible directions
+        for (int i = 0; i < 4; i++) {
+            int newRow = row + moves[i][0];
+            int newCol = col + moves[i][1];
+
+            // Check bounds and if the cell has been visited
+            if (newRow < 0 || newRow >= rows || newCol < 0 || newCol >= cols || seen[newRow][newCol]) {
+                continue;
+            }
+
+            int newTime = time + 1;
+            // If the time is less than the grid value, wait until the grid value is achievable
+            if (grid[newRow][newCol] > newTime) {
+                int wait = ((grid[newRow][newCol] - newTime + 1) / 2) * 2;
+                newTime += wait;
+            }
+
+            // If the destination is reached, return the new time
+            if (newRow == rows - 1 && newCol == cols - 1) {
+                return newTime;
+            }
+
+            seen[newRow][newCol] = 1; // mark as visited
+            Node next = {newTime, newRow, newCol};
+            push(next);
+        }
+    }
+
+    return -1; // If no valid path is found
+}

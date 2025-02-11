@@ -1,0 +1,58 @@
+#define MAX_N 500
+#define BITSET_SIZE ((MAX_N + 63) / 64)
+
+int* shortestDistanceAfterQueries(int n, int** queries, int queriesSize, int* queriesColSize, int* returnSize) {
+    uint64_t adj[MAX_N][BITSET_SIZE] = {0};
+    int dist[MAX_N];
+    
+    for(int i = 0; i < n; i++) {
+        dist[i] = n - 1 - i;
+    }
+
+    for(int i = 1; i < n; i++) {
+        adj[i][(i - 1) / 64] |= (1ULL << ((i - 1) % 64));
+    }
+
+    int* ret = malloc(sizeof(int) * queriesSize);
+    *returnSize = queriesSize;
+
+    for(int q = 0; q < queriesSize; q++) {
+        int a = queries[q][0];
+        int b = queries[q][1];
+
+        adj[b][a / 64] |= (1ULL << (a % 64));
+
+        if(dist[a] > dist[b] + 1) {
+            dist[a] = dist[b] + 1;
+
+            int queue[MAX_N];
+            int front = 0, back = 0;
+            queue[back++] = a;
+
+            while(front < back) {
+                int curr = queue[front++];
+                int dc = dist[curr] + 1;
+                int nq = (n + 63) / 64;
+
+                for(int j = 0; j < nq; j++) {
+                    uint64_t q = adj[curr][j];
+                    while(q) {
+                        uint8_t i = __builtin_ctzll(q);
+                        int k = j * 64 + i;
+                        if(k >= n) {
+                            break;
+                        }
+                        if(dist[k] > dc) {
+                            dist[k] = dc;
+                            queue[back++] = k;
+                        }
+                        q ^= 1ULL << i;
+                    }
+                }
+            }
+        }
+        ret[q] = dist[0];
+    }
+
+    return ret;
+}

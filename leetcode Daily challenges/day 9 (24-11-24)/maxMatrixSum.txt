@@ -1,0 +1,21 @@
+long long maxMatrixSum(int** matrix, int matrixSize, int* matrixColSize) {
+    long long totalSum = 0;       
+    int minAbsValue = __INT_MAX__; 
+    int negativeCount = 0;         
+
+
+    for (int i = 0; i < matrixSize; i++) {
+        for (int j = 0; j < matrixColSize[i]; j++) {
+            int val = matrix[i][j];
+            totalSum += abs(val);           
+            minAbsValue = (abs(val) < minAbsValue) ? abs(val) : minAbsValue; 
+            if (val < 0) negativeCount++;    
+        }
+    }
+
+    if (negativeCount % 2 != 0) {
+        totalSum -= 2 * minAbsValue; 
+    }
+
+    return totalSum;
+}

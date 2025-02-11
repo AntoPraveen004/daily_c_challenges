@@ -1,0 +1,29 @@
+int findChampion(int n, int** edges, int edgesSize, int* edgesColSize) {
+    int *possible;
+    int i,j;
+    int possiblenum, q = 0;
+    possible = (int *)malloc(n*sizeof(int));
+
+    for(i = 0 ; i < n ; i++){
+        possible[i] = i;
+    }
+    //init the possible array
+    for(i = 0 ; i < edgesSize ; i++){
+        j = edges[i][1];
+        if(possible[j] != -1){
+            possible[j] = -1;
+        }
+    }
+    for(i = 0 ; i < n ; i++){
+        if(possible[i] != -1){
+            possiblenum = possible[i];
+            q++;
+        }
+    }
+    // printf("%d,%d",possiblenum,q);
+    if(q == 0 || q > 1){
+        return -1;
+    }
+    return possiblenum;
+    free(possible);
+}

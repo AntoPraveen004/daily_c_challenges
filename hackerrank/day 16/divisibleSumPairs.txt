@@ -1,0 +1,15 @@
+int divisibleSumPairs(int n, int k, int ar_count, int* ar) {
+    int pair_count = 0;
+
+    // Loop through all pairs (i, j) where i < j
+    for (int i = 0; i < n; i++) {
+        for (int j = i + 1; j < n; j++) {
+            // Check if the sum of ar[i] and ar[j] is divisible by k
+            if ((ar[i] + ar[j]) % k == 0) {
+                pair_count++;
+            }
+        }
+    }
+
+    return pair_count;
+}

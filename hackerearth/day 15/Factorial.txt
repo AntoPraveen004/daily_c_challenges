@@ -1,0 +1,21 @@
+#include <stdio.h>
+
+long long factorial(int n) {
+    long long result = 1; // Use long long to handle large results
+
+    for (int i = 1; i <= n; i++) {
+        result *= i; // Multiply each number from 1 to n
+    }
+
+    return result;
+}
+
+int main() {
+    int n;
+    scanf("%d", &n); // Read the input number
+
+    long long result = factorial(n); // Calculate factorial
+    printf("%lld\n", result); // Print the result
+
+    return 0;
+}

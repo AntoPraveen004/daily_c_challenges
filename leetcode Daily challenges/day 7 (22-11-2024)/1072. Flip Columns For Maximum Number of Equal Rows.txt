@@ -1,0 +1,100 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Define a hash map entry structure
+typedef struct {
+    char* key;
+    int count;
+} HashEntry;
+
+// Hash map to store patterns
+typedef struct {
+    HashEntry* entries;
+    int size;
+    int capacity;
+} HashMap;
+
+// Function to create a hash map
+HashMap* createHashMap(int capacity) {
+    HashMap* map = (HashMap*)malloc(sizeof(HashMap));
+    map->entries = (HashEntry*)calloc(capacity, sizeof(HashEntry));
+    map->size = 0;
+    map->capacity = capacity;
+    return map;
+}
+
+// Hash function for strings
+unsigned int hashFunction(char* key, int capacity) {
+    unsigned int hash = 0;
+    while (*key) {
+        hash = (hash * 31 + *key++) % capacity;
+    }
+    return hash;
+}
+
+// Insert or update an entry in the hash map
+void insertHashMap(HashMap* map, char* key) {
+    unsigned int index = hashFunction(key, map->capacity);
+    while (map->entries[index].key != NULL) {
+        if (strcmp(map->entries[index].key, key) == 0) {
+            map->entries[index].count++;
+            return;
+        }
+        index = (index + 1) % map->capacity;
+    }
+    map->entries[index].key = strdup(key);
+    map->entries[index].count = 1;
+    map->size++;
+}
+
+// Get the maximum count from the hash map
+int getMaxCount(HashMap* map) {
+    int maxCount = 0;
+    for (int i = 0; i < map->capacity; i++) {
+        if (map->entries[i].key != NULL && map->entries[i].count > maxCount) {
+            maxCount = map->entries[i].count;
+        }
+    }
+    return maxCount;
+}
+
+// Free the hash map
+void freeHashMap(HashMap* map) {
+    for (int i = 0; i < map->capacity; i++) {
+        if (map->entries[i].key != NULL) {
+            free(map->entries[i].key);
+        }
+    }
+    free(map->entries);
+    free(map);
+}
+
+// Function to calculate the maximum number of equal rows after flips
+int maxEqualRowsAfterFlips(int** matrix, int matrixSize, int* matrixColSize) {
+    int cols = matrixColSize[0];
+    HashMap* map = createHashMap(2 * matrixSize); // Create a hash map with enough capacity
+
+    for (int i = 0; i < matrixSize; i++) {
+        char pattern[cols + 1];
+        char flippedPattern[cols + 1];
+        for (int j = 0; j < cols; j++) {
+            if (matrix[i][0] == matrix[i][j]) {
+                pattern[j] = '1';         // Match with the first column
+                flippedPattern[j] = '0'; // Opposite
+            } else {
+                pattern[j] = '0';
+                flippedPattern[j] = '1';
+            }
+        }
+        pattern[cols] = '\0';
+        flippedPattern[cols] = '\0';
+
+        // Insert the pattern and flippedPattern into the hash map
+        insertHashMap(map, pattern);
+    }
+
+    int result = getMaxCount(map);
+    freeHashMap(map); // Free the hash map
+    return result;
+}
